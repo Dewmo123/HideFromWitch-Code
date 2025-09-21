@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--가독성을 위해 dataPacket을 제일 위부터 쓰기!!-->
+<PDL>
+	<!--DataPackets-->
+	<dataPacket name ="VectorPacket">
+		<float name="x"/>
+		<float name="y"/>
+		<float name="z"/>
+	</dataPacket>
+	
+	<dataPacket name ="QuaternionPacket">
+		<float name="x"/>
+		<float name="y"/>
+		<float name="z"/>
+		<float name="w"/>
+	</dataPacket>
+	
+	<dataPacket name="RoomInfoPacket">
+		<int name ="roomId"/>
+		<int name ="maxCount"/>
+		<int name ="currentCount"/>
+		<string name="roomName"/>
+		<string name="hostName"/>
+	</dataPacket>
+	
+	<dataPacket name="PlayerNamePacket">
+		<string name ="nickName"/>
+		<int name="index"/>
+	</dataPacket>
+
+	<dataPacket name="PlayerInitPacket">
+		<int name="index"/>
+		<int name="modelIndex"/>
+		<string name="name"/>
+		<VectorPacket name ="position"/>
+		<QuaternionPacket name ="rotation"/>
+		<ushort name="role"/>
+	</dataPacket>
+	<dataPacket name="PlayerMovePacket">
+		<int name="index"/>
+		<float name="speed"/>
+		<VectorPacket name="position"/>
+		<VectorPacket name="direction"/>
+		<QuaternionPacket name="rotation"/>
+	</dataPacket>
+	<dataPacket name="PlayerModelPacket">
+		<int name="index"/>
+		<int name="modelIndex"/>
+	</dataPacket>
+	<dataPacket name="ScannedInfo">
+		<int name="index"/>
+	</dataPacket>
+	<!--Packets-->
+	<packet name="C_RoomEnter">
+		<int name ="roomId"/>
+	</packet>
+	<packet name="C_GameStart">
+	</packet>
+	<packet name="C_SetName">
+		<string name="name"/>
+	</packet>
+	
+	<packet name="S_RoomEnter">
+		<PlayerInitPacket name="newPlayer"/>
+	</packet>
+	<packet name="S_RoomEnterFirst">
+		<!--나중에 추가-->
+		<int name="myIndex"/>
+		<list name="inits">
+			<PlayerInitPacket name="att"/>
+		</list>
+	</packet>
+	
+	<packet name="C_RoomExit">
+	</packet>
+	
+	<packet name="S_RoomExit">
+		<int name="Index"/>
+	</packet>
+	
+	<packet name="C_CreateRoom">
+		<string name="roomName"/>
+		<int name="maxCount"/>
+	</packet>
+	<packet name ="S_RoomList">
+		<list name ="roomInfos">
+			<RoomInfoPacket name ="att"/>
+		</list>
+	</packet>
+	
+	<packet name="S_PacketResponse">
+		<ushort name="responsePacket"/>
+		<bool name="success"/>
+	</packet>
+	
+	<packet name ="C_RoomList">
+	</packet>
+	
+	<packet name="S_Chat">
+		<string name="pName"/>
+		<string name="text"/>
+	</packet>
+	
+	<packet name="C_Chat">
+		<string name="text"/>
+	</packet>
+
+	<packet name="C_Move">
+		<VectorPacket name="position"/>
+		<VectorPacket name="direction"/>
+		<float name="speed"/>
+	</packet>
+	<packet name="C_Rotate">
+		<QuaternionPacket name="rotation"/>
+	</packet>
+
+	<packet name="S_Move">
+		<list name="moves">
+			<PlayerMovePacket name="att"/>
+		</list>
+	</packet>
+	<packet namme="S_ModelChange">
+		<int name ="index"/>
+		<int name="modelIndex"/>
+	</packet>
+	<packet name="S_SyncTimer">
+		<float name="time"/>
+	</packet>
+	<packet name="S_UpdateRoomState">
+		<ushort name="state"/>
+	</packet>
+	<packet name="S_RoundStart">
+		
+	</packet>
+	<packet name="S_ResetGame">
+		<list name="playerinits">
+			<PlayerInitPacket name="att"/>
+		</list>
+	</packet>
+	<packet name="C_Shoot">
+		<VectorPacket name="direction"/>
+		<VectorPacket name="startPos"/>
+	</packet>
+	<packet name="S_PlayAnimation">
+		<int name ="index"/>
+		<ushort name="animType"/>
+	</packet>
+	<packet name="C_Attack">
+		<int name="hitIndex"/>
+	</packet>
+	<packet name="S_Shoot">
+		<int name="index"/>
+		<VectorPacket name="direction"/>
+		<VectorPacket name="startPos"/>
+	</packet>
+	<packet name="C_ResourceLoadComplete">
+	</packet>
+	<packet name="S_Dead">
+		<int name="index"/>
+	</packet>
+	<packet name="S_ChangeModel">
+		<list name="modelInfos">
+			<PlayerModelPacket name="att"/>
+		</list>
+	</packet>
+	<packet name="S_Teleport">
+		<VectorPacket name="position"/>
+	</packet>
+	<packet name="C_UseSkill">
+	</packet>
+	<packet name="S_UseSkill">
+		<ushort name="skillType"/>
+	</packet>
+	<packet name="C_Scanned">
+		<list name="scanned">
+			<ScannedInfo name="att"/>
+		</list>
+	</packet>
+	<packet name="S_Scanned">
+	</packet>
+	<packet name="S_MoveLock">
+		<int name="index"/>
+		<bool name="value"/>
+	</packet>
+	<packet name="C_MoveLock">
+		<bool name="value"/>
+	</packet>
+	<packet name="C_Fall">
+	</packet>
+	<packet name="S_RoomStateChange">
+		<ushort name="state"/>
+	</packet>
+	<packet name="S_HostChange">
+	</packet>
+	<packet name="S_SetSkill">
+		<ushort name ="skill"/>
+	</packet>
+	<packet name="S_GameEnd">
+		<ushort name ="winner"/>
+		<ushort name ="loser"/>
+	</packet>
+</PDL>

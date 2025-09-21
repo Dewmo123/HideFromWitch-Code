@@ -1,0 +1,16 @@
+{
+    "name": "Dependencies",
+    "rootNamespace": "",
+    "references": [
+        "GUID:292b7c18d0ca8774a8a6ea2b4f1140de"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
