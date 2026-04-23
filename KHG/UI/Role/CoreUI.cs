@@ -2,6 +2,7 @@ using AKH.Network;
 using AKH.Scripts.Packet;
 using Assets._00.Work.YHB.Scripts.Core;
 using DewmoLib.Utiles;
+using KHG.Managers;
 using UnityEngine;
 
 namespace KHG.UIs
@@ -10,6 +11,7 @@ namespace KHG.UIs
     {
         [SerializeField] private TimerController timer;
         [SerializeField] private EventChannelSO packetChannel;
+        [SerializeField] private GameObject gameStartButton;
         [field: SerializeField] public InputSO inputSO { get; private set; }
         public InputSO Input => inputSO;
 
@@ -22,6 +24,7 @@ namespace KHG.UIs
         private void Awake()
         {
             packetChannel.AddListener<SyncTimer>(SetTime);
+            packetChannel.AddListener<GameStateChangeEvent>(HandleGameStateChanged);
             coreUis = GetComponentsInChildren<ICoreUI>();
             InitCoreUis();
         }
@@ -29,6 +32,7 @@ namespace KHG.UIs
         private void OnDestroy()
         {
             packetChannel.RemoveListener<SyncTimer>(SetTime);
+            packetChannel.RemoveListener<GameStateChangeEvent>(HandleGameStateChanged);
         }
 
         private void InitCoreUis()
@@ -54,6 +58,15 @@ namespace KHG.UIs
         {
             float time = evt.remaintime;
             timer.SetTime(time);
+        }
+
+        private void HandleGameStateChanged(GameStateChangeEvent evt)
+        {
+            if (gameStartButton == null)
+                return;
+
+            bool canStart = evt.State == RoomState.Lobby && HostManager.Instance.IsHost;
+            gameStartButton.SetActive(canStart);
         }
     }
 }
