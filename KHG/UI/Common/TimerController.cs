@@ -6,7 +6,7 @@ public class TimerController : MonoBehaviour, ICoreUI
 {
     [SerializeField] private TMP_Text timeTmp;
 
-    public void Initialize(CoreUI coreUI)
+    public void Initialize(ICoreUIContext coreUIContext)
     {
     }
 

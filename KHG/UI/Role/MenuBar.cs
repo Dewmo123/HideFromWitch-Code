@@ -1,12 +1,26 @@
 using AKH.Network;
+using Assets._00.Work.YHB.Scripts.Core;
 using KHG.UIs;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class MenuBar : MonoBehaviour, ICoreUI
 {
     [SerializeField] private GameObject _menuBar;
+
     private bool _menuState;
+    private InputSO _input;
+
+    public void Initialize(ICoreUIContext coreUIContext)
+    {
+        _input = coreUIContext.Input;
+        _input.OnEscapeEvent += EscapeCalled;
+    }
+
+    private void OnDestroy()
+    {
+        if (_input != null)
+            _input.OnEscapeEvent -= EscapeCalled;
+    }
 
     public void EscapeCalled()
     {
@@ -23,10 +37,6 @@ public class MenuBar : MonoBehaviour, ICoreUI
     {
         Cursor.lockState = CursorLockMode.None;
         NetworkManager.Instance.SendPacket(new C_RoomExit());
-    }
-
-    public void Initialize(CoreUI coreUI)
-    {
     }
 
     private void SetMenuBar(bool value)

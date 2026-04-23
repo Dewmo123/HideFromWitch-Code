@@ -14,6 +14,8 @@ public class TitleMessageManager : MonoBehaviour, ICoreUI
     [SerializeField] private TMP_Text subTitle;
 
     public bool Showing { get; private set; }
+    private Sequence _currentSequence;
+    private TMP_Text _currentText;
 
     private void Awake()
     {
@@ -24,6 +26,7 @@ public class TitleMessageManager : MonoBehaviour, ICoreUI
 
     private void OnDestroy()
     {
+        StopCurrentMessage();
         uiChannel.RemoveListener<MessageEvent>(HandleMessage);
         packetChannel.RemoveListener<MessageEvent>(HandleMessage);
     }
@@ -36,23 +39,11 @@ public class TitleMessageManager : MonoBehaviour, ICoreUI
 
     private void HandleMessage(MessageEvent evt)
     {
-        print("타이틀 이벤트 받음:" + evt.Message);
-        if (Showing == true) RestartMessage(evt);
-
-        TMP_Text targetTmp = mainTitle;
-
         TitleData data = evt.Data;
         string msg = evt.Message;
+        TMP_Text targetTmp = ResolveTargetText(data.mode);
 
-        switch (data.mode)
-        {
-            case TitleMode.MainTitle:
-                targetTmp = mainTitle;
-                break;
-            case TitleMode.SubTitle:
-                targetTmp = subTitle;
-                break;
-        }
+        StopCurrentMessage();
 
         targetTmp.gameObject.SetActive(true);
         Showing = true;
@@ -60,22 +51,39 @@ public class TitleMessageManager : MonoBehaviour, ICoreUI
         targetTmp.color = new Color(1, 1, 1, 0);
         targetTmp.SetText(msg);
 
-        Sequence seq = DOTween.Sequence();
-        seq.Append(targetTmp.DOFade(1, data.fadeInTime));
-        seq.AppendInterval(data.lifeTime);
-        seq.Append(targetTmp.DOFade(0, data.fadeOutTime)).OnComplete(() => { targetTmp.gameObject.SetActive(false); Showing = false; });
+        _currentText = targetTmp;
+        _currentSequence = DOTween.Sequence();
+        _currentSequence.Append(targetTmp.DOFade(1, data.fadeInTime));
+        _currentSequence.AppendInterval(data.lifeTime);
+        _currentSequence.Append(targetTmp.DOFade(0, data.fadeOutTime))
+            .OnComplete(() =>
+            {
+                targetTmp.gameObject.SetActive(false);
+                Showing = false;
+                _currentText = null;
+                _currentSequence = null;
+            });
     }
 
-    private void RestartMessage(MessageEvent evt)
+    private TMP_Text ResolveTargetText(TitleMode mode)
     {
-        DOTween.Kill(this);
-        print("타이틀 제공 겹침으로 인해 이전 타이틀이 제거됩니다.");
-        Showing = false;
-
-        HandleMessage(evt);
+        return mode == TitleMode.MainTitle ? mainTitle : subTitle;
     }
 
-    public void Initialize(CoreUI coreUI)
+    private void StopCurrentMessage()
+    {
+        if (_currentSequence != null && _currentSequence.IsActive())
+            _currentSequence.Kill();
+
+        if (_currentText != null)
+            _currentText.gameObject.SetActive(false);
+
+        Showing = false;
+        _currentText = null;
+        _currentSequence = null;
+    }
+
+    public void Initialize(ICoreUIContext coreUIContext)
     {
     }
 }
